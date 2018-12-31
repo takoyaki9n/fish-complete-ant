@@ -12,7 +12,7 @@ function __fish_complete_ant_targets -d "Print list of targets from build.xml an
             set prev $token
         end
         # return last one
-        echo -n $buildfile
+        eval echo -n $buildfile
     end
     # Parse ant targets in the given build file
     function __parse_ant_targets
@@ -36,8 +36,6 @@ function __fish_complete_ant_targets -d "Print list of targets from build.xml an
     set -l buildfile (__get_buildfile)
     if test -f $buildfile
         __parse_ant_targets $buildfile
-    else
-        echo $buildfile
     end
 end
 
