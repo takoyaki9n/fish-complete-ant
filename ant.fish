@@ -1,6 +1,6 @@
 # Apache Ant (1.9.5) completion for Fish Shell.
 
-complete -x -c ant -l debug -a "(__fish_complete_ant_targets)"
+complete -x -c ant -a "(__fish_complete_ant_targets)"
 
 # ant [script options] [options] [target [target2 [target3] ..]]
 # Script Options:
