@@ -7,35 +7,38 @@ function __fish_complete_ant_targets -d "Print list of targets from build.xml an
         for token in $tokens[2..-1]
             switch $prev
             case -buildfile -file -f
-                set buildfile $token
+                set buildfile (eval echo $token)
             end
             set prev $token
         end
         # return last one
-        eval echo -n $buildfile
+        echo $buildfile
     end
     # Parse ant targets in the given build file
     function __parse_ant_targets
         set -l buildfile $argv[1]
         # An array of ant targets ignoring new lines in start-tags
         # This does not work as expected when a value includes '>' (e.g. <target name="foo>bar">)
-        set -l targets (string join ' ' (cat $buildfile) | string match -ar '<target.*?>')
+        set -l targets (string join ' ' (cat $buildfile) | string match -ar '<(?:target|extension-point).*?>')
         for target in $targets
             # These do not work as expected when a value includes '"' (e.g. <target name="foo\"bar">)
-            set -l target_name (string match -r 'name="(.*?)"' $target)
-            set -l target_description (string match -r 'description="(.*?)"' $target)
-            if test -n $target_name[2]
-                echo -n $target_name[2]
-                if test -n $target_description[2]
-                    echo \t$target_description[2]
+            if set -l target_name (string match -r 'name="(.*?)"' $target)
+                if set -l target_description (string match -r 'description="(.*?)"' $target)
+                    echo $target_name[2]\t$target_description[2]
+                else
+                    echo $target_name[2]
                 end
             end
         end
     end
-
-    set -l buildfile (__get_buildfile)
-    if test -f $buildfile
+    # Get ant targets recursively
+    function __get_ant_targets
+        set -l buildfile $argv[1]
         __parse_ant_targets $buildfile
     end
-end
 
+    set -l buildfile (__get_buildfile)
+    if [ -f $buildfile ]
+        __get_ant_targets $buildfile
+    end
+end
