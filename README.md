@@ -1,6 +1,8 @@
 # fish-complete-ant
 Fish complete for Apache Ant
 
+![demo](images/demo.gif)
+
 ## Install
 ```
 fisher add takoyaki9n/fish-complete-ant
